@@ -1,0 +1,46 @@
+﻿@page "/Usuario/account"
+
+@using Afiliacion.Services.AppServices
+@using Afiliacion.Services.Page
+@using Microsoft.AspNetCore.Authorization
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+@using Afiliacion.Models.Page
+@using Afiliacion.Models.BD
+@using Afiliacion.Models.Sesion
+@using Afiliacion.Services.Prospecto
+@using Services;
+@using Afiliacion.Services.Page
+@inject HttpClient Http
+@inject PageElementsService PageElements 
+@inject MainService MainService
+@inject AuthenticationService AuthenticationService
+@inject UserService UserService
+@inject NavigationManager NavigationManager
+@layout MainLayout
+@attribute [Authorize]
+<PageTitle>Account</PageTitle>
+
+    <h3 class="my-4">Your Account</h3>
+    @* <p>@UserService.CurrentUser.Name</p> *@
+    <p>Usuario: @usuario.Name</p> 
+    <button type="button" class="btn btn-danger" @onclick="Logout">Logout</button>
+
+@code {
+    private UserModel usuario;
+
+    private void Logout() {
+        AuthenticationService.LogOut();
+        NavigationManager.NavigateTo("/");
+    }
+    protected override async Task OnInitializedAsync() {
+        try {
+            usuario = UserService.CurrentUser;
+            // userName = UserService.CurrentUser.Name;
+            // usuario = UserService.CurrentUser;
+        } catch (Exception ex) {
+            Console.WriteLine($"Error en OnInitializedAsync {ex.Message}");
+            throw;
+        }
+    }
+}

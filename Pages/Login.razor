@@ -1,0 +1,86 @@
+﻿@page "/"
+@layout EmptyLayout
+@using Afiliacion.Services.AppServices
+@using Afiliacion.Models.Sesion
+@using Afiliacion.Services.Page
+@using Afiliacion.Services.Prospecto
+@inject NavigationManager NavigationManager
+@inject SessionStorageService SessionStorageService
+@inject TokenizerService TokenizerService
+@inject AuthenticationStateProvider_ AuthenticationStateProvider
+@inject AuthenticationService AuthenticationService
+@inject PageElementsService PageElementsService
+@inject MainService MainService
+<head>
+    <link href="css/loginStyle.css" rel="stylesheet" />
+</head>
+<EditForm Model="user" OnValidSubmit="LogIn">
+    <div class="login-page">
+        <div class="form">
+            <form class="login-form">
+                <InputText type="mail" @bind-Value="user.Usuario" placeholder="Usuario@fcme.com.ec" />
+                <ValidationMessage For="@(() => user.Usuario)" />
+                <InputText type="password" @bind-Value="user.Password" placeholder="············" />
+                <ValidationMessage For="@(() => user.Password)" />
+                <button @onclick="LogIn" @onclick:preventDefault> Iniciar Sesión </button>
+                <p class="message">Olvido su clave ? <a href="#">Recuperar Contrasena</a></p>
+            </form>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private LoginModel user = new ();
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            try {
+                var isAuthenticated = await AuthenticationService.IsAuthenticated();
+                if (isAuthenticated) {
+                    // Si hay un token almacenado, intentar autenticar automáticamente
+                    var token = await SessionStorageService.GetItem("authToken");
+                    await TryAutoAuthenticate(token);
+                }
+            } catch (Exception ex) {
+                Console.WriteLine($"Error en OnInitializedAsync {ex.Message}");
+                throw;
+            }
+        }
+    }
+
+    private async Task TryAutoAuthenticate(string token) {
+        var isAuthenticated = await TokenizerService.ValidateToken(token);
+        if (isAuthenticated) {
+            // Si el token es válido, redirigir al usuario a una página de inicio de sesión exitosa
+            NavigationManager.NavigateTo("/index");
+        } else {
+            // Si el token no es válido, limpiar el token almacenado y permitir al usuario iniciar sesión manualmente
+            await SessionStorageService.RemoveItem("authToken");
+        }
+    }
+
+    private async Task LogIn() {
+        Console.WriteLine($"Entro al LogIn");
+        try {
+            var isAuthenticated = await AuthenticationService.Authenticate(user.Usuario, user.Password);
+            if (isAuthenticated) {
+                await UpdateAuthenticationState();
+                await PageElementsService.GetPageElements();
+                await MainService.SetRegistroBlank();
+                NavigationManager.NavigateTo("/Prospecto/DatosPersonales/dp_01");
+                //NavigationManager.NavigateTo("/Usuario/Account");
+            }
+            if (!isAuthenticated) {
+                Console.WriteLine("Usuario NO autenticado");
+            }
+        } catch (Exception ex) {
+            Console.WriteLine($"Error en el LOGIN {ex.Message}");
+        }
+
+    }
+    
+    private async Task UpdateAuthenticationState(){
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        AuthenticationStateProvider.NotifyUserAuthentication(user.Identity.Name);
+    }
+}

@@ -1,0 +1,211 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Afiliacion.Models.BD;
+public class BDModel{
+    public string co_empr { get; set; } = "1";
+    public string ci_tipo_inst { get; set; } = string.Empty;
+    public string co_inst { get; set; } = string.Empty;
+    public string ci_cedu { get; set; } = string.Empty;
+    public string no_nomb { get; set; } = string.Empty;
+    public string no_apel_prim { get; set; } = string.Empty;
+    public string ds_cdla_resi { get; set; } = string.Empty;
+    public string co_titu_prof { get; set; } = string.Empty;
+    public string co_prov_resi { get; set; } = string.Empty;
+    public string co_catg { get; set; } = string.Empty;
+    public string co_tipo_doce { get; set; } = string.Empty;
+    public string fe_naci { get; set; } = string.Empty;
+    public string co_cant_resi { get; set; } = string.Empty;
+    public string co_esta_civi { get; set; } = string.Empty;
+    public string ds_mail { get; set; } = string.Empty;
+    public string co_parr_resi { get; set; } = string.Empty;
+    public string nu_carg { get; set; } = string.Empty;
+    public string co_carg_actu { get; set; } = string.Empty;
+    public string ds_call_prin_resi { get; set; } = string.Empty;
+    public string nu_call_prin { get; set; } = string.Empty;
+    public string ds_call_secu_resi { get; set; } = string.Empty;
+    public string nu_manz_resi { get; set; } = string.Empty;
+    public string nu_vill_resi { get; set; } = string.Empty;
+    public string co_oper { get; set; } = string.Empty;
+    public string ds_refe_ubic_resi { get; set; } = string.Empty;
+    public string co_jorn { get; set; } = string.Empty;
+    public string co_pais_naci { get; set; } = string.Empty;
+    public string fe_ingr_magi { get; set; } = string.Empty;
+    public string co_prov_inst { get; set; } = string.Empty;
+    public string co_cant_inst { get; set; } = string.Empty;
+    public string co_parr_inst { get; set; } = string.Empty;
+    public string no_inst { get; set; } = string.Empty;
+    public string in_jornada { get; set; } = string.Empty;
+    public string co_nive { get; set; } = string.Empty;
+    public string co_sost { get; set; } = string.Empty;
+    public string co_zona { get; set; } = string.Empty;
+    public string co_dist { get; set; } = string.Empty;
+    public string in_sexo { get; set; } = string.Empty;
+    public string in_rura_resi { get; set; } = string.Empty;
+    public string nu_celu { get; set; } = string.Empty;
+    public string nu_telf { get; set; } = string.Empty;
+    public string co_area_lbrl { get; set; } = string.Empty;
+    public string ce_estado { get; set; } = string.Empty;
+    public string co_tipo_cont { get; set; } = string.Empty;
+    public string mo_unif { get; set; } = string.Empty;
+    public string co_banc { get; set; } = string.Empty;
+    public string nu_cnta { get; set; } = string.Empty;
+    public string ti_cnta { get; set; } = string.Empty;
+    public string ds_call_prin_inst { get; set; } = string.Empty;
+    public string ds_amie { get; set; } = string.Empty;
+    public string mo_apor_adic { get; set; } = string.Empty;
+    public string fx_fondo { get; set; } = string.Empty;
+    public string co_tipo_plan { get; set; } = string.Empty;
+    public string co_tipo_plan_exeq { get; set; } = string.Empty;
+    public string co_pers_poli_expu { get; set; } = string.Empty;
+    public string co_orgn_ingr { get; set; } = string.Empty;
+    public string co_actv_suje_cred { get; set; } = string.Empty;
+    public string ciu_naci { get; set; } = string.Empty;
+    public string mo_act { get; set; } = string.Empty;
+    public string mo_pasi { get; set; } = string.Empty;
+    public string mo_patr { get; set; } = string.Empty;
+    public string mo_ingr { get; set; } = string.Empty;
+    public string mo_apor { get; set; } = string.Empty;
+
+
+
+
+
+
+
+    /*
+        Datos para la institucion 
+     */
+
+    public string in_rura_inst { get; set; } = string.Empty;
+    public string ds_call_secu_inst { get; set; } = string.Empty;
+    public string ds_cdla_inst { get; set; } = string.Empty;
+    public string ds_manz_inst { get; set; } = string.Empty;
+    public string ds_vill_inst { get; set; } = string.Empty;
+    public string ds_refe_ubic_inst { get; set; } = string.Empty;
+    public string co_sect_regi { get; set; } = string.Empty;
+    public string co_vivi { get; set; } = string.Empty;
+    public string nu_anio_auto { get; set; } = string.Empty;
+    public string co_marc_auto { get; set; } = string.Empty;
+    public string ds_mode_auto { get; set; } = string.Empty;
+    public string ds_otro_bien { get; set; } = string.Empty;
+    public string nu_telf_inst { get; set; } = string.Empty;
+    public string ds_hora_cnto { get; set; } = string.Empty;
+    public string in_afil { get; set; } = string.Empty;
+    public string fe_ingr { get; set; } = string.Empty;
+    public string ho_ingr { get; set; } = string.Empty;
+    public string fe_aprb { get; set; } = string.Empty;
+    public string co_usua_aprb { get; set; } = string.Empty;
+    public string fe_elim { get; set; } = string.Empty;
+    public string co_usua_elim { get; set; } = string.Empty;
+    public string ti_tran { get; set; } = string.Empty;
+    public string st_regi { get; set; } = string.Empty;
+    public string co_ejec { get; set; } = string.Empty;
+    public string fe_modi { get; set; } = string.Empty;
+    public string sc_fcha_afil { get; set; } = string.Empty;
+    public string fe_doc { get; set; } = string.Empty;
+    public string fe_doc2 { get; set; } = string.Empty;
+    public string sc_comi { get; set; } = string.Empty;
+
+
+
+    //public string co_empr { get; set; } = "1";
+    //[Required(ErrorMessage = "Debe ingresar la cedula.")]
+    //[RegularExpression("^[0-9]*$", ErrorMessage = "Solo se permiten números.")]
+    //[StringLength(11, ErrorMessage = "La cédula no puede exceder los 11 caracteres.")]
+    //public string ci_cedu { get; set; } = string.Empty;
+    //[Required(ErrorMessage = "Debe ingresar los Apellidos.")]
+    //[RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Solo se permiten caracteres alfanuméricos.")]
+    //[StringLength(100, ErrorMessage = "Los Apellidos no pueden exceder los 100 caracteres.")]
+    //public string no_apel_prim { get; set; } = string.Empty;
+    //public string no_apel_secu { get; set; } = string.Empty;
+
+    //[Required(ErrorMessage = "Debe ingresar los Nombres.")]
+    //[RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Solo se permiten caracteres alfanuméricos.")]
+    //[StringLength(100, ErrorMessage = "Los Nombres no pueden exceder los 100 caracteres.")]
+    //public string no_nomb { get; set; } = string.Empty;
+    //public string in_sexo { get; set; } = string.Empty;
+    //public string co_pais_naci { get; set; } = string.Empty;
+    //public string co_esta_civi { get; set; } = string.Empty;
+    //public string fe_naci { get; set; } = string.Empty;
+    //public string nu_carg { get; set; } = string.Empty;
+    //public string co_prov_resi { get; set; } = string.Empty;
+    //public string co_cant_resi { get; set; } = string.Empty;
+    //public string co_parr_resi { get; set; } = string.Empty;
+    //public string in_rura_resi { get; set; } = string.Empty;
+    //public string ds_call_prin_resi { get; set; } = string.Empty;
+    //public string ds_call_secu_resi { get; set; } = string.Empty;
+    //public string ds_cdla_resi { get; set; } = string.Empty;
+    //public string nu_manz_resi { get; set; } = string.Empty;
+    //public string nu_vill_resi { get; set; } = string.Empty;
+    //public string ds_refe_ubic_resi { get; set; } = string.Empty;
+    //public string co_carg_actu { get; set; } = string.Empty;
+    //public string co_titu_prof { get; set; } = string.Empty;
+    //public string co_catg { get; set; } = string.Empty;
+    //public string co_tipo_cont { get; set; } = string.Empty;
+    //public string co_tipo_doce { get; set; } = string.Empty;
+    //public string fe_ingr_magi { get; set; } = string.Empty;
+    //public string co_inst { get; set; } = string.Empty;
+    //public string no_inst { get; set; } = string.Empty;
+    //public string ds_amie { get; set; } = string.Empty;
+    //public string co_nive { get; set; } = string.Empty;
+    //public string co_sost { get; set; } = string.Empty;
+    //public string co_jorn { get; set; } = string.Empty;
+    //public string co_zona { get; set; } = string.Empty;
+    //public string co_dist { get; set; } = string.Empty;
+    //public string ci_tipo_inst { get; set; } = string.Empty;
+    //public string co_prov_inst { get; set; } = string.Empty;
+    //public string co_cant_inst { get; set; } = string.Empty;
+    //public string co_parr_inst { get; set; } = string.Empty;
+    //public string in_rura_inst { get; set; } = string.Empty;
+    //public string ds_call_prin_inst { get; set; } = string.Empty;
+    //public string ds_call_secu_inst { get; set; } = string.Empty;
+    //public string ds_cdla_inst { get; set; } = string.Empty;
+    //public string ds_manz_inst { get; set; } = string.Empty;
+    //public string ds_vill_inst { get; set; } = string.Empty;
+    //public string ds_refe_ubic_inst { get; set; } = string.Empty;
+    //public string co_sect_regi { get; set; } = string.Empty;
+    //public string co_vivi { get; set; } = string.Empty;
+    //public string nu_anio_auto { get; set; } = string.Empty;
+    //public string co_marc_auto { get; set; } = string.Empty;
+    //public string ds_mode_auto { get; set; } = string.Empty;
+    //public string ds_otro_bien { get; set; } = string.Empty;
+    //public string nu_telf_inst { get; set; } = string.Empty;
+    //public string ds_hora_cnto { get; set; } = string.Empty;
+    //public string mo_apor { get; set; } = string.Empty;
+    //public string mo_apor_adic { get; set; } = string.Empty;
+    //public string in_afil { get; set; } = string.Empty;
+    //public string fe_ingr { get; set; } = string.Empty;
+    //public string ho_ingr { get; set; } = string.Empty;
+    //public string fe_aprb { get; set; } = string.Empty;
+    //public string co_usua_aprb { get; set; } = string.Empty;
+    //public string fe_elim { get; set; } = string.Empty;
+    //public string co_usua_elim { get; set; } = string.Empty;
+    //public string ti_tran { get; set; } = string.Empty;
+    //public string st_regi { get; set; } = string.Empty;
+    //public string co_area_lbrl { get; set; } = string.Empty;
+    //public string nu_call_prin { get; set; } = string.Empty;
+    //public string co_ejec { get; set; } = string.Empty;
+    //public string fe_modi { get; set; } = string.Empty;
+    //public string co_banc { get; set; } = string.Empty;
+    //public string nu_cnta { get; set; } = string.Empty;
+    //public string ti_cnta { get; set; } = string.Empty;
+    //public string co_tipo_plan { get; set; } = string.Empty;
+    //public string sc_fcha_afil { get; set; } = string.Empty;
+    //public string co_oper { get; set; } = string.Empty;
+    //public string nu_telf { get; set; } = string.Empty;
+    //public string nu_celu { get; set; } = string.Empty;
+    //public string ds_mail { get; set; } = string.Empty;
+    //public string fe_doc { get; set; } = string.Empty;
+    //public string fe_doc2 { get; set; } = string.Empty;
+    //public string ce_estado { get; set; } = string.Empty;
+    //public string sc_comi { get; set; } = string.Empty;
+    //public string co_tipo_plan_exeq { get; set; } = string.Empty;
+    //public string co_actv_suje_cred { get; set; } = string.Empty;
+    //public string co_pers_poli_expu { get; set; } = string.Empty;
+    //public string co_orgn_ingr { get; set; } = string.Empty;
+    //public string mo_ingr { get; set; } = string.Empty;
+    //public string mo_act { get; set; } = string.Empty;
+    //public string mo_pasi { get; set; } = string.Empty;
+    //public string mo_patr { get; set; } = string.Empty;
+    //public string ciu_naci { get; set; } = string.Empty;
+}

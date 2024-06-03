@@ -1,0 +1,131 @@
+﻿@page "/Prospecto/DatosFinanciero/df_01"
+@using Afiliacion.Models.Page.PageElements
+@using Microsoft.AspNetCore.Authorization
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+@using Afiliacion.Models.Page
+@using Afiliacion.Models.BD
+@using Afiliacion.Services.Prospecto
+@using Services;
+@using Afiliacion.Services.Page
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@inject PageElementsService PageElements
+@inject MainService MainService
+@layout MainLayout
+@attribute [Authorize]
+<PageTitle>Datos Financieros</PageTitle>
+<EditForm Model="RegConsultado">
+<form class="data-form">
+    <div class="data-form data-panel">
+        <h3>Datos de Aporte:</h3>
+        <div class="form-group">
+            <div class="form-group">
+                <label>Fecha de ingreso de formulario incremento de Aporte - OPR-CTA-FORM-004:</label>
+                    <InputText @bind-Value="RegConsultado.fe_ingr_magi" class="form-control" style="width: 75%; vertical-align:central; margin-top:6px;" disabled="@isDisabled"/>
+                
+            </div>
+        </div>
+        <div class="form-group grid-2-columns">
+            <div>
+                <label>Aporte Personal:</label>
+                    <InputText @bind-Value="RegConsultado.mo_apor" class="form-control" style="display: inline-block; vertical-align:central" disabled="@isDisabled" />
+            </div>
+            <div>
+                <label>Aporte Adicional:</label>
+                    <InputText @bind-Value="RegConsultado.mo_apor_adic" class="form-control" style="display: inline-block; vertical-align:central" disabled="@isDisabled" />
+            </div>
+        </div>
+    </div>
+    <div class="data-form data-panel">
+        <h3>Referencias Bancarias:</h3>
+        <div class="form-group row">
+            <div class="form-group">
+            <label>Institución Bancaria:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_banc" class="form-select" disabled="@isDisabled">
+                    <option value="">Seleccione opción</option>
+                    @foreach (var banco in LocalElements.lst_Banco) {
+                        <option value="@banco.ci_banco">@banco.no_banco</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-4">
+                <label>Tipo Cuenta:</label>
+                    <InputSelect @bind-Value="RegConsultado.ti_cnta" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var tipoCuenta in LocalElements.lst_TipoCuenta) {
+                            <option value="@tipoCuenta.ti_cnta">@tipoCuenta.ds_ti_cnta</option>
+                        }
+                    </InputSelect>
+            </div>
+            <div class="col-md-8">
+                <label>Número Cuenta Bancaria:</label>
+                    <InputText @bind-Value="RegConsultado.nu_cnta" class="form-control" style="display: inline-block; vertical-align:central" disabled="@isDisabled" />
+                @* <ValidationMessage For="@(() => person.FirstName)" /> *@
+            </div>
+        </div>        
+    </div>
+
+    <div class="data-form data-panel">
+        <h3>Datos Patrimonio:</h3>
+        <div class="form-group grid-2-columns">
+             <div>
+                 <label>Total Ingresos Mensuales:</label>
+                    <InputText @bind-Value="RegConsultado.mo_ingr" class="form-control" style="display: inline-block; vertical-align:central" disabled="@isDisabled"/>
+                    @* <ValidationMessage For="@(() => person.FirstName)" /> *@
+             </div>
+             <div>
+                 <label>Total Activos:</label>
+                    <InputText @bind-Value="RegConsultado.co_marc_auto" class="form-control" style="display: inline-block; vertical-align:central" disabled="@isDisabled" />
+                    @* <ValidationMessage For="@(() => person.FirstName)" /> *@
+             </div>
+         </div>
+         <div class="form-group grid-2-columns">
+            <div>
+                <label>Total Pasivos:</label>
+                    <InputText @bind-Value="RegConsultado.co_marc_auto" class="form-control" style="display: inline-block; vertical-align:central" disabled="@isDisabled" />
+                @* <ValidationMessage For="@(() => person.FirstName)" /> *@
+            </div>
+            <div>
+                <label>Total Patrimonio:</label>
+                    <InputText @bind-Value="RegConsultado.co_marc_auto" class="form-control" style="display: inline-block; vertical-align:central" disabled="@isDisabled" />
+                @* <ValidationMessage For="@(() => person.FirstName)" /> *@
+            </div>
+        </div>
+    </div>
+    <div class="text-end">
+            <button @onclick="SavePerson" class="btn btn-primary" disabled="@isDisabled">Guardar</button>
+            @* <button @onclick="goNext" class="btn btn-primary" disabled="@isDisabled">Siguiente >></button> *@
+            <button @onclick="goNext" class="btn btn-primary">Siguiente >></button>
+    </div>
+</form>
+</EditForm>
+@code {
+    private PageElementsModel LocalElements;
+    private BDModel RegConsultado;
+
+    private bool isDisabled;
+
+    private void SavePerson() {
+        // Aquí puedes implementar la lógica para guardar los datos de la persona
+        // Por ejemplo, enviarlos al servidor o almacenarlos localmente.
+        // person contiene los valores ingresados por el usuario.
+    }
+    protected override async Task OnInitializedAsync() {
+        LocalElements = PageElements.PageElements;
+        RegConsultado = MainService.RegistroActual;
+        isDisabled = string.IsNullOrEmpty(RegConsultado.ci_cedu);
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            await Task.Delay(1);
+            NavigationManager.NavigateTo("/Prospecto/DatosServicios/ds_01");
+        }
+    }
+    private async Task goNext() {
+        await Task.Delay(1);
+        NavigationManager.NavigateTo("/Prospecto/DatosServicios/ds_01");
+    }
+}

@@ -1,0 +1,154 @@
+﻿@page "/Prospecto/DatosPersonales/dp_03"
+@using Afiliacion.Models.Page.PageElements
+@using Microsoft.AspNetCore.Authorization
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+@using Afiliacion.Models.Page
+@using Afiliacion.Models.BD
+@using Afiliacion.Services.Prospecto
+@using Services;
+@using Afiliacion.Services.Page
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@inject PageElementsService PageElements
+@inject MainService MainService
+@layout MainLayout
+@attribute [Authorize]
+<PageTitle>Datos Profesionales</PageTitle>
+
+<!-- Formulario para ingresar datos de una persona -->
+<EditForm Model="RegConsultado">
+<form class="data-form">
+    <div class="data-form data-panel">
+        <h3>Datos Profesionales:</h3>
+        <div class="form-group grid-3-columns">
+            <div>
+                <label for="no_apel">Título Profesional:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_titu_prof" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var titulo in LocalElements.lst_TituloProfesional) {
+                            <option value="@titulo.ci_titulo">@titulo.tx_titulo</option>
+                        }
+                    </InputSelect>
+            </div>
+            <div>
+                <label for="no_apel">Cargo Actual:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_carg_actu" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var cargo in LocalElements.lst_Cargo) {
+                            <option value="@cargo.ci_cargo">@cargo.no_cargo</option>
+                        }
+                    </InputSelect>
+            </div>
+            <div>
+                <label for="no_nom">Categoría:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_catg" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var cargo in LocalElements.lst_Categoria) {
+                            <option value="@cargo.ci_categoria">@cargo.no_categoria</option>
+                        }
+                    </InputSelect>
+            </div>
+        </div>
+        <div class="form-group grid-3-columns">
+            <div>
+                <label for="no_apel">Tipo Contrato:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_tipo_cont" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var cargo in LocalElements.lst_TipoContrato) {
+                            <option value="@cargo.co_tipo_cont">@cargo.ds_tipo_cont</option>
+                        }
+                    </InputSelect>
+            </div>
+            <div>
+                <label for="no_apel">Area:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_area_lbrl" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var cargo in LocalElements.lst_Area) {
+                            <option value="@cargo.co_area_lbrl">@cargo.ds_area_lbrl</option>
+                        }
+                    </InputSelect>
+            </div>
+            <div>
+                <label for="phone">Fecha Magisterio:</label>
+                    <input type="tel" id="phone" @bind="RegConsultado.fe_ingr_magi" class="form-control" disabled="@isDisabled" />
+            </div>
+        </div>
+         <div class="form-group grid-3-columns">
+            <div>
+                 <label for="no_nom">Jornada:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_jorn" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var cargo in LocalElements.lst_Jornada) {
+                            <option value="@cargo.co_jorn_lbrl">@cargo.ds_jorn_lbrl</option>
+                        }
+                    </InputSelect>
+            </div>
+            </div>
+    </div>
+
+
+    <div class="data-form data-panel">
+        <h3>Datos Adicionales:</h3>    
+            <div class="form-group grid-3-columns">
+                <div>
+                    <label for="no_apel">Actividad Económica:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_actv_suje_cred" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var activEcono in LocalElements.lst_ActividadEconomica) {
+                            <option value="@activEcono.co_actv_suje_cred">@activEcono.ds_actv_suje_cred</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div>
+                    <label for="no_apel">Origen de Ingresos:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_orgn_ingr" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var otroIngreso in LocalElements.lst_OtrosIngresos) {
+                            <option value="@otroIngreso.sc_orgn_ingr">@otroIngreso.ds_orgn_ingr</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div>
+                    <label for="no_nom">Pers. Politicamente Exp.:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_pers_poli_expu" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var perPoliExp in LocalElements.lst_PersPoliExpuesta) {
+                            <option value="@perPoliExp.co_poli_exp">@perPoliExp.ds_poli_exp</option>
+                        }
+                    </InputSelect>
+                </div>
+            </div>            
+    </div>
+    <div class="text-end">
+        <button @onclick="SavePerson" class="btn btn-primary">Guardar</button>
+            @* <button @onclick="goNext" class="btn btn-primary" disabled="@isDisabled">Siguiente >></button> *@
+            <button @onclick="goNext" class="btn btn-primary">Siguiente >></button>
+    </div>
+</form>
+</EditForm>
+@code {
+    private PageElementsModel LocalElements;
+    private BDModel RegConsultado;
+    private bool isDisabled;
+    private void SavePerson() {
+        // Aquí puedes implementar la lógica para guardar los datos de la persona
+        // Por ejemplo, enviarlos al servidor o almacenarlos localmente.
+        // person contiene los valores ingresados por el usuario.
+    }
+    protected override async Task OnInitializedAsync() {
+        LocalElements = PageElements.PageElements;
+        RegConsultado = MainService.RegistroActual;
+        isDisabled = string.IsNullOrEmpty(RegConsultado.ci_cedu);
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            await Task.Delay(1);
+            //NavigationManager.NavigateTo("/Prospecto/DatosInstitucion/di_01");
+        }
+    }
+    private async Task goNext() {
+        await Task.Delay(1);
+        NavigationManager.NavigateTo("/Prospecto/DatosInstitucion/di_01");
+    }
+}

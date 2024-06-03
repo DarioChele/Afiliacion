@@ -1,0 +1,272 @@
+﻿@page "/Prospecto/DatosPersonales/dp_01"
+@using Afiliacion.Models.Page.PageElements
+@using Microsoft.AspNetCore.Authorization
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+@using Afiliacion.Models.Page
+@using Afiliacion.Models.BD
+@using Afiliacion.Services.Prospecto
+@using Services;
+@using Afiliacion.Services.Page
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@inject PageElementsService PageElements 
+@inject MainService MainService
+@layout MainLayout
+@attribute [Authorize]
+<PageTitle>Datos Personales</PageTitle>
+<EditForm Model="RegConsultado">
+    <!-- Formulario para ingresar datos del Participe o del Afiliado -->
+    <div class="data-form data-panel">
+        <h3>Busqueda:</h3>
+        <div class="form-group grid-3-columns">
+            <div class="form-group">
+                <div class="form-group">
+                    <label>Cédula de Identidad:</label>
+                </div>
+                <div class="form-group">
+                    <InputText @bind-Value="RegConsultado.ci_cedu" class="form-control" style="display: inline-block; width: 75%; vertical-align:central" maxlength="11" id="txt_cedu" disabled = "@(isDisabled ? false : true)"/>
+                    <ValidationMessage For="@(() => RegConsultado.ci_cedu)" />
+                    <button @onclick="() => BuscaReg(RegConsultado.co_empr, RegConsultado.ci_cedu)" class="btn btn-success" style="display: inline-block; margin: 10px; vertical-align:central" disabled="@(isDisabled ? false : true)">...</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-group">
+                    <label>Fecha firma contrato Adhesión al FCME:</label>
+                </div>
+                <div class="form-group">
+                    <InputText @bind-Value="FormattedDate" class="form-control" style="width: 75%; vertical-align:central; margin-top:6px;" disabled="@isDisabled" />
+                    
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-group">
+                    <label> Estado del Afiliado:</label>
+                </div>
+                <div class="form-group">
+                    <InputSelect @bind-Value="RegConsultado.ce_estado" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var estado in LocalElements.lst_EstadoAfil) {
+                            <option value="@estado.ci_estado">@estado.tx_estado</option>
+                        }
+                    </InputSelect>
+                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="data-form data-panel">
+        <h3>Datos Personales:</h3>
+        <form class="data-form">
+            <div class="form-group grid-2-columns">            
+                <div>
+                    <label>Apellidos:</label>
+                    <InputText @bind-Value="RegConsultado.no_apel_prim" class="form-control" disabled="@isDisabled" />
+                    <ValidationMessage For="@(() => RegConsultado.no_apel_prim)" />
+                </div>
+                <div>
+                    <label>Nombres:</label>
+                    <InputText @bind-Value="RegConsultado.no_nomb" class="form-control" disabled="@isDisabled" />
+                    <ValidationMessage For="@(() => RegConsultado.no_nomb)" />
+                </div>
+            </div>
+            <div class="form-group grid-4-columns">
+                <div>
+                    <label>Sexo:</label>                    
+                    <InputSelect @bind-Value="RegConsultado.in_sexo" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var genero in LocalElements.lst_Genero) {
+                            <option value="@genero.in_sexo">@genero.ds_sexo</option>
+                        }
+                    </InputSelect>
+                    @*<ValidationMessage For="@(() => person.co_gene)" />*@
+                </div>
+                <div>
+                    <label>Nacionalidad:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_pais_naci" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opcion</option>
+                        @foreach (var nacionalidad in LocalElements.lst_Nacionalidad) {
+                            <option value="@nacionalidad.co_pais_naci">@nacionalidad.ds_pais_naci</option>
+                        }
+                    </InputSelect>
+                    @*<ValidationMessage For="@(() => person.co_gene)" />*@
+                </div>
+                <div>
+                    <label>Estado Civil:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_esta_civi" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opcion</option>
+                        @foreach (var estaCivil in LocalElements.lst_EstadoCivil) {
+                            <option value="@estaCivil.co_esta_civi">@estaCivil.ds_esta_civi</option>
+                        }
+                    </InputSelect>
+                    @*<ValidationMessage For="@(() => person.co_gene)" />*@
+                </div>
+                <div>
+                    <label>Ciudad de Nacimiento:</label>
+                    <InputText @bind-Value="RegConsultado.ciu_naci" class="form-control" disabled="@isDisabled" />
+                    @* <ValidationMessage For="@(() => person.no_apel)" /> *@
+                </div>
+            </div>
+            <div class="form-group grid-3-columns">
+                <div>
+                    <label>Fecha de Nacimiento:</label>
+                    <input type="date" id="fec_naci" @bind="localConfig.fec_naci" class="form-control" min="@localConfig.YearsAgo_90" max=@localConfig.YearsAgo_18 />                 
+                </div>
+                <div>
+                    <label>Numero de Cargas:</label>
+                    <InputText @bind-Value="RegConsultado.nu_carg" class="form-control" disabled="@isDisabled" />
+                    @* <ValidationMessage For="@(() => person.no_apel)" /> *@
+                </div>
+                <div>
+                    @* <label for="no_nom">Jornada:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_jorn" class="form-select">
+                        <option value="">Seleccione opcion</option>
+                        @foreach (var jornada in LocalElements.lst_Jornada) {
+                            <option value="@jornada.co_jorn_lbrl">@jornada.ds_jorn_lbrl</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => person.co_gene)" />*@ 
+                </div>
+            </div>
+            <div class="form-group grid-4-columns">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <InputText @bind-Value="RegConsultado.ds_mail" type="email" class="form-control" placeholder="usuario@gmail.com.ec" maxlength="100" disabled="@isDisabled" />
+                </div>
+                <div class="form-group">
+                    <label for="phone">Teléfono:</label>                    
+                    <InputText @bind-Value="numConvencional" @oninput="FormatConvencional" type="tel" class="form-control" placeholder="(01) 2345-678" maxlength="14" disabled="@isDisabled" />
+                </div>
+                <div class="form-group">
+                    <label>Ceular:</label>
+                    <InputText @bind-Value="numCelular" @oninput="FormatCelular" type="tel" class="form-control" placeholder="(01) 2345-678" maxlength="14" disabled="@isDisabled" />
+                </div>
+                <div class="form-group">
+                    <label>Operadora:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_oper" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opcion</option>
+                        @foreach (var genero in LocalElements.lst_Operadora) {
+                            <option value="@genero.co_oper_celu">@genero.ds_oper_celu</option>
+                        }
+                    </InputSelect>
+                    @*<ValidationMessage For="@(() => person.co_gene)" />*@
+                </div>
+            </div>
+            <div class="text-end">
+                <button @onclick="Cancelar" class="btn btn-primary" disabled="@isDisabled">Cancelar</button>
+                <button @onclick="goNext" class="btn btn-primary" disabled="@(isDisabled ? false : true)">Guardar</button>
+                <button @onclick="goNext" class="btn btn-primary" disabled="@isDisabled">Siguiente >></button>
+            </div>
+        </form>
+    </div>
+</EditForm>
+@code {
+    private PageElementsModel LocalElements;
+    private BDModel RegConsultado = new();
+    private LocalConfig localConfig = new LocalConfig();
+    private string numCelular;
+    private string numConvencional;
+
+    private bool isDisabled;
+
+
+    protected override async Task OnInitializedAsync() {
+        try {
+            LocalElements = PageElements.PageElements;
+            RegConsultado = MainService.RegistroActual;
+            isDisabled = string.IsNullOrEmpty(RegConsultado.ci_cedu);
+        } catch (Exception) {
+
+            throw;
+        }
+
+    }
+    protected override void OnInitialized() {
+        localConfig.fec_naci = DateTime.Parse(localConfig.YearsAgo_18);
+        FormattedDate = DateTime.Today.ToString();
+        base.OnInitialized();
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            RegConsultado = new(); // Restablecer las propiedades
+            await MainService.SetRegistroActual(RegConsultado);
+            isDisabled = true;
+            StateHasChanged();
+        }
+    }
+
+
+    public DateTime fec_firmContAdhe { get; set; }
+    public string FormattedDate {
+        get {
+            return fec_firmContAdhe.ToString("dd 'de' MMMM 'de' yyyy");
+        }
+        set {
+            DateTime.TryParse(value, out DateTime parsedDate);
+            fec_firmContAdhe = parsedDate;
+        }
+    }
+
+    private void FormatCelular(ChangeEventArgs e) {
+        string input = e.Value.ToString();
+        // Conserva solo los caracteres permitidos
+        input = new string(input.Where(c => char.IsDigit(c) || c == '(' || c == ')' || c == '-').ToArray());
+        if (!string.IsNullOrEmpty(input.Trim())) {
+            input = input.Replace("(", "").Replace(")", "").Replace("-", "");
+            if (input.Length > 2)
+            {
+                input = "(" + input.Substring(0, 2) + ") " + input.Substring(2);
+            }
+            if (input.Length > 9)
+            {
+                input = input.Substring(0, 9) + "-" + input.Substring(9);
+            }
+            numCelular = input;
+        }
+        else {
+
+        }        
+    }
+    private void FormatConvencional(ChangeEventArgs e) {
+        var number = e.Value.ToString().Replace(" ", "");
+        if (!string.IsNullOrEmpty(number)) {
+            number = number.Replace("(", "").Replace(")", "").Replace("-", "");
+            if (number.Length > 2) {
+                number = "(" + number.Substring(0, 2) + ") " + number.Substring(2);
+            }
+            if (number.Length > 9) {
+                number = number.Substring(0, 9) + "-" + number.Substring(9);
+            }
+        }
+        numConvencional = number;
+    }
+
+    private async Task BuscaReg(string co_emp, string co_cedu) {
+        isDisabled = false;
+        if (string.IsNullOrEmpty (co_emp)) {
+            co_emp = "1";
+        }
+        await MainService.BuscaRegistro(co_emp, co_cedu);
+        if (!string.IsNullOrEmpty(MainService.RegistroActual.ci_cedu)) {
+            RegConsultado = MainService.RegistroActual;
+        }
+        // Forzar una actualización manual de la interfaz de usuario
+        StateHasChanged();
+    }
+    private async Task Cancelar() {
+        RegConsultado = new();
+        await MainService.SetRegistroActual(RegConsultado);        
+        // Forzar una actualización manual de la interfaz de usuario
+        isDisabled = true;        
+        StateHasChanged();
+    }
+    private async Task goNext() {
+        await Task.Delay(1);
+        NavigationManager.NavigateTo("/Prospecto/DatosPersonales/dp_02");
+    }
+    
+    public class LocalConfig {
+        public DateTime fec_naci;
+        public string YearsAgo_18 => DateTime.Today.AddYears(-18).ToString("yyyy-MM-dd");
+        public string YearsAgo_90 => DateTime.Today.AddYears(-90).ToString("yyyy-MM-dd");
+    }
+}

@@ -1,0 +1,11 @@
+﻿@page "/index"
+@using Microsoft.AspNetCore.Authorization
+@layout MainLayout
+@attribute [Authorize]
+<PageTitle>Index</PageTitle>
+
+<h1>Actualización de Datos..!</h1>
+
+Crear aquí el registro de nuevos datos.
+
+<SurveyPrompt Title="Tienes alguna pregunta..?" />

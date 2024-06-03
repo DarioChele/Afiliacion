@@ -1,0 +1,117 @@
+﻿@page "/Prospecto/DatosInstitucion/di_01"
+@using Afiliacion.Models.Page.PageElements
+@using Microsoft.AspNetCore.Authorization
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+@using Afiliacion.Models.Page
+@using Afiliacion.Models.BD
+@using Afiliacion.Services.Prospecto
+@using Services;
+@using Afiliacion.Services.Page
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@inject PageElementsService PageElements
+@inject MainService MainService
+@layout MainLayout
+@attribute [Authorize]
+<PageTitle>Datos Institucion</PageTitle>
+<EditForm Model="RegConsultado">
+<div class="data-form data-panel">
+    <h3>Datos de la Institución:</h3>
+    <form class="data-form">
+        <div class="form-group row">            
+            <div class="col-md-3">
+                <label >Código AMIE:</label>
+                    <InputText @bind-Value="RegConsultado.ds_amie" class="form-control" style="display: inline-block; width: 75%; vertical-align:central" disabled="@isDisabled" />
+            </div>
+                @* CAMBIAR POR UNA VENTANA DE BUSQUEDA *@
+            <div class="col-md-9">
+                <label>Institución:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_nive" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var nivel in LocalElements.lst_NivelInstitucion) {
+                            <option value="@nivel.co_nive_inst">@nivel.ds_nive_inst</option>
+                        }
+                    </InputSelect>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Institución ??:</label>
+                <InputText @bind-Value="RegConsultado.ds_amie" class="form-control" style="display: inline-block; vertical-align:central" disabled="@isDisabled" />
+            
+        </div>
+        <div class="form-group grid-2-columns">
+            <div>
+                <label>Nivel:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_nive" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var nivel in LocalElements.lst_NivelInstitucion) {
+                            <option value="@nivel.co_nive_inst">@nivel.ds_nive_inst</option>
+                        }
+                    </InputSelect>
+            </div>
+            <div>
+                <label>Sostenimiento:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_sost" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var sostenimiento in LocalElements.lst_Sostenimiento) {
+                            <option value="@sostenimiento.co_tipo_sost">@sostenimiento.ds_tipo_sost</option>
+                        }
+                    </InputSelect>
+            </div>
+        </div>
+        <div class="form-group grid-2-columns">
+            <div>
+                <label>Zona:</label>
+                    <InputSelect @bind-Value="RegConsultado.co_zona" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var zona in LocalElements.lst_Zona) {
+                            <option value="@zona.co_zona">@zona.ds_zona</option>
+                        }
+                    </InputSelect>
+            </div>
+            <div>
+                <label>Distrito:</label>
+                    <InputText @bind-Value="RegConsultado.co_dist" class="form-control" style="display: inline-block; vertical-align:central" disabled="@isDisabled" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="address">Referenca de ubicación:</label>
+                <InputTextArea @bind-Value="RegConsultado.ds_refe_ubic_inst" class="form-control" rows="6" disabled="@isDisabled" />
+
+        </div>
+        <div class="text-end">
+                <button @onclick="SavePerson" class="btn btn-primary" disabled="@isDisabled">Guardar</button>
+                @* <button @onclick="goNext" class="btn btn-primary" disabled="@isDisabled">Siguiente >></button> *@
+                <button @onclick="goNext" class="btn btn-primary">Siguiente >></button>
+        </div>
+    </form>
+</div>
+</EditForm>
+@code {    
+    private PageElementsModel LocalElements;
+    private BDModel RegConsultado;
+
+    private bool isDisabled;
+
+    private void SavePerson() {
+        // Aquí puedes implementar la lógica para guardar los datos de la persona
+        // Por ejemplo, enviarlos al servidor o almacenarlos localmente.
+        // person contiene los valores ingresados por el usuario.
+    }
+    protected override async Task OnInitializedAsync() {
+        LocalElements = PageElements.PageElements;
+        RegConsultado = MainService.RegistroActual;
+        isDisabled = string.IsNullOrEmpty(RegConsultado.ci_cedu);
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            await Task.Delay(1);
+            NavigationManager.NavigateTo("/Prospecto/DatosFinanciero/df_01");
+        }
+    }
+    private async Task goNext() {
+        await Task.Delay(1);
+        NavigationManager.NavigateTo("/Prospecto/DatosFinanciero/df_01");
+    }
+}

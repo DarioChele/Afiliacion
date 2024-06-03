@@ -1,0 +1,188 @@
+﻿@page "/Prospecto/DatosPersonales/dp_02"
+@using Afiliacion.Models.Page.PageElements
+@using Microsoft.AspNetCore.Authorization
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+@using Afiliacion.Models.Page
+@using Afiliacion.Models.BD
+@using Afiliacion.Services.Prospecto
+@using Services;
+@using Afiliacion.Services.Page
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@inject PageElementsService PageElements
+@inject MainService MainService
+@layout MainLayout
+@attribute [Authorize]
+<PageTitle>Direccion Afiliado</PageTitle>
+
+<!-- Formulario para ingresar datos de una persona -->
+<EditForm Model="RegConsultado">
+<div class="data-form data-panel">
+    <h3>Dirección del Afiliado:</h3>
+    @* <form class="data-form"> *@
+        <div class="form-group grid-3-columns">
+            <div>
+                <label>Provincia:</label>
+                <InputSelect TValue="string" @bind-Value="selectedProvinciaId" @onchange="OnProvinciaChange" class="form-select" disabled="@isDisabled">
+                    <option value="">Seleccione opción</option>
+                    @foreach (var provincia in LocalElements.Pais.Provincias) {
+                        <option value="@provincia.ci_provincia">@provincia.no_provincia</option>
+                    }
+                </InputSelect>
+            </div>
+            <div>
+                <label>Cantón:</label>                
+                <InputSelect TValue="string" @bind-Value="selectedCantonId" @onchange="OnCantonChange" class="form-select" id="cmbCant" @attributes="cantonAttributes">
+                    <option value="">Seleccione opción</option>
+                    @if (selectedProvincia != null && isProvinciaSelected) {
+                        @foreach (var canton in selectedProvincia.Cantones) {
+                            <option value="@canton.co_cant">@canton.ds_cant</option>
+                        }
+                    }
+            </InputSelect>
+            </div>
+            <div>
+                <label>Parroquia:</label>
+                <InputSelect TValue="string" @bind-Value="selectedParroquiaId" class="form-select" id="cmbParr" @attributes="parroquiaAttributes">
+                    <option value="">Seleccione opción</option>
+                    @if (selectedCanton != null && isCantonSelected) {
+                        @foreach (var parroquia in selectedCanton.Parroquias) {
+                            <option value="@parroquia.co_parr">@parroquia.ds_parr</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label>Rural:</label>
+                <InputSelect @bind-Value="RegConsultado.in_rura_resi" class="form-select" disabled="@isDisabled">
+                        <option value="">Seleccione opción</option>
+                        @foreach (var rural in LocalElements.lst_Rural) {
+                            <option value="@rural.co_rural">@rural.ds_rural</option>
+                        }
+                    </InputSelect>
+            </div>
+            <div class="col-md-9">
+                <label>Calle Principal:</label>
+                <InputText @bind-Value="RegConsultado.ds_call_prin_resi" class="form-control" disabled="@isDisabled" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label>No. Casa:</label>
+                <InputText @bind-Value="RegConsultado.nu_vill_resi" class="form-control" disabled="@isDisabled"/>
+            </div>
+            <div class="col-md-9">
+                <label>Calle Secundaria:</label>
+                <InputText @bind-Value="RegConsultado.ds_call_secu_resi" class="form-control" disabled="@isDisabled" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-4">
+                <label>Ciudadela:</label>
+                <InputText @bind-Value="RegConsultado.ds_cdla_resi" class="form-control" disabled="@isDisabled" />
+            </div>
+            <div class="col-md-4">
+                <label>Manzana:</label>
+                <InputText @bind-Value="RegConsultado.nu_manz_resi" class="form-control" disabled="@isDisabled" />
+            </div>
+            <div class="col-md-4">
+                <label>Villa:</label>
+                <InputText @bind-Value="RegConsultado.nu_vill_resi" class="form-control" disabled="@isDisabled" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Referenca de ubicación:</label>
+            <textarea id="address" @bind="RegConsultado.ds_refe_ubic_resi" class="form-control" rows="6" disabled="@isDisabled"></textarea>
+        </div>
+        <div class="text-end">
+            <button @onclick="SavePerson" class="btn btn-primary">Guardar</button>
+            @* <button @onclick="goNext" class="btn btn-primary" disabled="@isDisabled">Siguiente >></button> *@
+            <button @onclick="goNext" class="btn btn-primary" >Siguiente >></button>
+        </div>
+    @* </form> *@
+</div>
+</EditForm>
+@code {
+    private PageElementsModel LocalElements;
+    private BDModel RegConsultado;
+
+    private string selectedProvinciaId;
+    private string selectedCantonId;
+    private string selectedParroquiaId;
+
+    private bool isDisabled;
+
+    private bool isProvinciaSelected => !string.IsNullOrEmpty(selectedProvinciaId);
+    private bool isCantonSelected => !string.IsNullOrEmpty(selectedCantonId);
+
+    private Provincia selectedProvincia => LocalElements.Pais.Provincias.FirstOrDefault(p => p.ci_provincia == selectedProvinciaId);
+    private Canton selectedCanton => selectedProvincia?.Cantones.FirstOrDefault(c => c.co_cant == selectedCantonId);
+
+    private Dictionary<string, object> cantonAttributes => isProvinciaSelected ? null : new Dictionary<string, object> { { "disabled", "disabled" } };    
+    private Dictionary<string, object> parroquiaAttributes => !isCantonSelected || !isProvinciaSelected ? new Dictionary<string, object> { { "disabled", "disabled" } } : null;
+
+    protected override async Task OnInitializedAsync() {
+        LocalElements = PageElements.PageElements;
+        RegConsultado = MainService.RegistroActual;
+        isDisabled = string.IsNullOrEmpty(RegConsultado.ci_cedu);
+        if (string.IsNullOrEmpty(RegConsultado.co_prov_resi)) {
+            selectedProvinciaId = "";
+            selectedCantonId = "";
+            selectedParroquiaId = "";
+        } else {
+            selectedProvinciaId = RegConsultado.co_prov_resi;
+            selectedCantonId = RegConsultado.co_cant_resi;
+            selectedParroquiaId = RegConsultado.co_parr_resi;
+        }
+
+        UpdateModel();
+    }
+
+    private void UpdateModel() {
+        if (!string.IsNullOrEmpty(selectedProvinciaId)) {
+            RegConsultado.co_prov_resi = selectedProvincia?.ci_provincia;
+            if (!string.IsNullOrEmpty(selectedCantonId)) {
+                RegConsultado.co_cant_resi = selectedCanton?.co_cant;
+                if (!string.IsNullOrEmpty(selectedParroquiaId)) {
+                    RegConsultado.co_parr_resi = selectedParroquiaId;
+                } else {
+                    selectedParroquiaId = selectedCanton?.Parroquias.FirstOrDefault()?.co_parr;
+                    RegConsultado.co_parr_resi = selectedParroquiaId;
+                }
+            } else {
+                selectedCantonId = selectedProvincia?.Cantones.FirstOrDefault()?.co_cant;
+                selectedParroquiaId = selectedCanton?.Parroquias.FirstOrDefault()?.co_parr;
+                RegConsultado.co_cant_resi = selectedCantonId;
+                RegConsultado.co_parr_resi = selectedParroquiaId;
+            }
+        }
+    }
+
+    private async Task OnProvinciaChange(ChangeEventArgs e) {
+        selectedProvinciaId = e.Value.ToString();        
+            selectedCantonId = "";
+            selectedParroquiaId = "";        
+            UpdateModel();
+            await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnCantonChange(ChangeEventArgs e) {
+        selectedCantonId = e.Value.ToString();
+        selectedParroquiaId = "";
+        UpdateModel();
+        await InvokeAsync(StateHasChanged);
+    }
+    private void SavePerson() {
+        // Aquí puedes implementar la lógica para guardar los datos de la persona
+        // Por ejemplo, enviarlos al servidor o almacenarlos localmente.
+        // person contiene los valores ingresados por el usuario.
+    }
+    private async Task goNext() {
+        await Task.Delay(1);
+        NavigationManager.NavigateTo("/Prospecto/DatosPersonales/dp_03");
+    }
+}
