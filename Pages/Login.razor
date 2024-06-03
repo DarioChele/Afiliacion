@@ -31,33 +31,6 @@
 
 @code {
     private LoginModel user = new ();
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender) {
-            try {
-                var isAuthenticated = await AuthenticationService.IsAuthenticated();
-                if (isAuthenticated) {
-                    // Si hay un token almacenado, intentar autenticar automáticamente
-                    var token = await SessionStorageService.GetItem("authToken");
-                    await TryAutoAuthenticate(token);
-                }
-            } catch (Exception ex) {
-                Console.WriteLine($"Error en OnInitializedAsync {ex.Message}");
-                throw;
-            }
-        }
-    }
-
-    private async Task TryAutoAuthenticate(string token) {
-        var isAuthenticated = await TokenizerService.ValidateToken(token);
-        if (isAuthenticated) {
-            // Si el token es válido, redirigir al usuario a una página de inicio de sesión exitosa
-            NavigationManager.NavigateTo("/index");
-        } else {
-            // Si el token no es válido, limpiar el token almacenado y permitir al usuario iniciar sesión manualmente
-            await SessionStorageService.RemoveItem("authToken");
-        }
-    }
-
     private async Task LogIn() {
         Console.WriteLine($"Entro al LogIn");
         try {
